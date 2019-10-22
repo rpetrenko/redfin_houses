@@ -1,14 +1,16 @@
-from typing import Set, List
+from typing import List
 import pandas as pd
 import requests
 import argparse
 from pyquery import PyQuery as pq
+import pprint
+import json
 from redfin_houses.redfin import _REDFIN_PREFIX, _REQUEST_HEADER
 
 
-def parse_links(doc: pq) -> Set:
+def parse_links(doc: pq) -> List:
     links = {"{}{}".format(_REDFIN_PREFIX, x.attrib['href']) for x in doc.find('a')}
-    return links
+    return [{'url': l} for l in links]
 
 
 def parse_text(doc: pq) -> List:
@@ -19,7 +21,8 @@ def parse_table(doc: pq) -> str:
     table = doc('table')
     table_html = "<table>{}</table>".format(table.html())
     df = pd.read_html(table_html)[0]
-    return df.to_csv(index=False)
+    js = df.to_json(orient='records')
+    return json.loads(js)
 
 
 def get_details(uri):
@@ -44,8 +47,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print("Getting details from {}".format(args.url))
     res = get_details(args.url)
-    for k, v in res.items():
-        print(k)
-        print(v)
-        print()
+    pprint.pprint(res)
 
