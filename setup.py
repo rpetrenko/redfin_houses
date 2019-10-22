@@ -30,9 +30,25 @@ setup(
     keywords='redfin house real estate',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     license='GNU LGPLv3',
-    python_requires='>=3',
+    python_requires=' >= 3',
     install_requires=[
-        "pyquery >= 1.4.0",
+        "pyquery  >=  1.4.0",
+        "beautifulsoup4 >= 4.8.1",
+        "certifi >= 2019.9.11",
+        "chardet >= 3.0.4",
+        "cssselect >= 1.1.0",
+        "html5lib >= 1.0.1",
+        "idna >= 2.8",
+        "lxml >= 4.4.1",
+        "numpy >= 1.17.3",
+        "pandas >= 0.25.2",
+        "python-dateutil >= 2.8.0",
+        "pytz >= 2019.3",
+        "requests >= 2.22.0",
+        "six >= 1.12.0",
+        "soupsieve >= 1.9.4",
+        "urllib3 >= 1.25.6",
+        "webencodings >= 0.5.1"
     ],
 )
 
