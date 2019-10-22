@@ -4,13 +4,20 @@ import requests
 import argparse
 from pyquery import PyQuery as pq
 import pprint
+import time
 import json
 from redfin_houses.redfin import _REDFIN_PREFIX, _REQUEST_HEADER
 
 
-def parse_links(doc: pq) -> List:
-    links = {"{}{}".format(_REDFIN_PREFIX, x.attrib['href']) for x in doc.find('a')}
-    return [{'url': l} for l in links]
+def parse_links(doc: pq, retries: int=3) -> List:
+    for _ in range(retries):
+        try:
+            links = {"{}{}".format(_REDFIN_PREFIX, x.attrib['href']) for x in doc.find('a')}
+            return [{'url': l} for l in links]
+        except Exception:
+            print('trying again...')
+            time.sleep(1)
+    return []
 
 
 def parse_text(doc: pq) -> List:
@@ -30,7 +37,7 @@ def get_details(uri):
     if resp.ok:
         doc = pq(resp.text)
     else:
-        raise Exception("can't get url")
+        raise Exception(resp.text)
     result = dict()
     result['marketing-remarks'] = parse_text(doc.find('#marketing-remarks-scroll'))
     result['property-details'] = parse_text(doc.find('#property-details-scroll'))
